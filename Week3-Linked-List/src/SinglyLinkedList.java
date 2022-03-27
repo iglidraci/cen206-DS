@@ -1,33 +1,22 @@
-/*
-# Main operations
-prepend(value)        -> Add a node in the beginning
-append(value)         -> Add a node in the end
-pop()                 -> Remove a node from the end
-popFirst()            -> Remove a node from the beginning
-head()                -> Return the first node
-tail()                -> Return the last node
-remove(Node)          -> Remove Node from the list
-*/
-import java.util.ArrayList;
-import java.util.Optional;
+import ADT.LinkedList;
 
-public class LinkedList<T> {
+import java.util.ArrayList;
+
+public class SinglyLinkedList<T> extends LinkedList<T> {
 	private Node<T> head;
 	private Node<T> tail;
-	private int size = 0;
-	public LinkedList() {
+	public SinglyLinkedList() {
 	}
-	public LinkedList(T headValue) {
-		append(headValue);
+	public SinglyLinkedList(T... values) {
+		for(T value: values)
+			append(value);
 	}
-	public Node<T> head() {
-		return this.head;
+
+	public T head() {
+		return this.head.getValue();
 	}
-	public Node<T> tail() {
-		return this.tail;
-	}
-	public int size() {
-		return this.size;
+	public T tail() {
+		return this.tail.getValue();
 	}
 	public boolean isEmpty() {
 		return size == 0;
@@ -40,7 +29,7 @@ public class LinkedList<T> {
 		} else {
 			Node<T> temp = this.head;
 			this.head = new Node<>(value);
-			this.head.next = temp;
+			this.head.setNext(temp);
 		}
 		size++;
 	}
@@ -52,7 +41,7 @@ public class LinkedList<T> {
 		} else {
 			Node<T> temp = this.tail;
 			this.tail = new Node<>(value);
-			temp.next = this.tail;
+			temp.setNext(this.tail);
 		}
 		size++;
 	}
@@ -60,8 +49,8 @@ public class LinkedList<T> {
 		ArrayList<T> list = new ArrayList<>();
 		Node<T> dummy = this.head;
 		while (dummy != null) {
-			list.add(dummy.value);
-			dummy = dummy.next;
+			list.add(dummy.getValue());
+			dummy = dummy.getNext();
 		}
 		return list;
 	}
@@ -72,16 +61,16 @@ public class LinkedList<T> {
 			return null;
 		}
 		else if (size == 1) {
-			val = this.head.value;
+			val = this.head.getValue();
 			this.head = null;
 			this.tail = null;
 		} else {
 			Node<T> current = head;
-			while (current.next != null && current.next.next != null) {
-				current = current.next;
+			while (current.getNext() != null && current.getNext().getNext() != null) {
+				current = current.getNext();
 			}
-			val = current.next.value;
-			current.next = null;
+			val = current.getNext().getValue();
+			current.setNext(null);
 			this.tail = current;
 		}
 		size--;
@@ -93,12 +82,12 @@ public class LinkedList<T> {
 			return null;
 		}
 		else if (size == 1) {
-			val = this.head.value;
+			val = this.head.getValue();
 			this.head = null;
 			this.tail = null;
 		} else {
-			val = this.head.value;
-			this.head = this.head.next;
+			val = this.head.getValue();
+			this.head = this.head.getNext();
 		}
 		size--;
 		return val;
@@ -109,54 +98,50 @@ public class LinkedList<T> {
         Node<T> prev = null;
         while (current != null) {
             T val;
-            if (current.value == target) {
-                val = current.value;
+            if (current.getValue() == target) {
+                val = current.getValue();
                 if (prev == null) {
                     // it's head
                     if (size == 1) {
                         this.head = null;
                         this.tail = null;
                     } else {
-                        this.head = this.head.next;
+                        this.head = this.head.getNext();
                     }
-                } else if (current.next == null) {
+                } else if (current.getNext() == null) {
                     // is tail
-                    prev.next = null;
+                    prev.setNext(null);
                     this.tail = prev;
                 }
                 else {
-                    prev.next = current.next;
+                    prev.setNext(current.getNext());
                 }
                 return val;
             } else {
                 prev = current;
-                current = current.next;
+                current = current.getNext();
             }
         }
         return null;
     }
-	@Override
-	public String toString() {
-		Optional<String> result = toList().stream().map(x -> x.toString())
-                .reduce((x, y) -> x + " -> " + y);
-        return result.orElse("[]");
-	}
-}
 
-class Node<T> {
-	public T value;
-	public Node<T> next;
-	public Node() {}
-	public Node (T value, Node<T> next) {
-		this.value = value;
-		this.next = next;
-	}
-	public Node (T value) {
-		this.value = value;
-		this.next = null;
-	}
 	@Override
-	public String toString() {
-		return ""+value;
+	public int indexOf(T value) {
+		return 0;
+	}
+
+	public void reverse() {
+		// reverse the linked list in place, do not return anything just mutate it
+		this.tail = this.head;
+		Node<T> next;
+		Node<T> prev = null;
+		Node<T> current = this.head;
+		while (current != null) {
+			next = current.getNext();
+			current.setNext(prev);
+			prev = current;
+			current = next;
+		}
+		this.head = prev;
 	}
 }
