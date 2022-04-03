@@ -13,7 +13,6 @@ reverse()			  -> Reverse the linked list in-place
 */
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public abstract class LinkedList<T> {
     protected int size = 0;
@@ -37,8 +36,7 @@ public abstract class LinkedList<T> {
     }
     @Override
     public String toString() {
-        Optional<String> result = toList().stream().map(Object::toString)
-                .reduce((x, y) -> x + " -> " + y);
-        return result.orElse("[]");
+        return toList().stream().map(Object::toString)
+                .reduce((x, y) -> x + " -> " + y).orElse("[]");
     }
 }

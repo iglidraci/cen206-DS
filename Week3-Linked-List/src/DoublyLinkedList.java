@@ -84,8 +84,6 @@ public class DoublyLinkedList<T> extends LinkedList<T> {
     public int indexOf(T value) {
         return 0;
     }
-
-    // swap next and prev for all nodes of doubly linked list
     @Override
     public void reverse() {
 

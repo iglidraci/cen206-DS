@@ -1,25 +1,43 @@
+
+
 public class Main {
 	public static void main (String[] args) {
-		CircularlyLinkList<Integer> circularlyLinkList = new CircularlyLinkList<>(1, 2, 3);
-		circularlyLinkList.prepend(0);
-		circularlyLinkList.prepend(-1);
-		circularlyLinkList.prepend(-2);
-		circularlyLinkList.append(4);
-		System.out.println(circularlyLinkList);
-		System.out.println("Rotate ...");
-		circularlyLinkList.rotate();
-		System.out.println(circularlyLinkList);
-		System.out.println("Rotate ...");
-		circularlyLinkList.rotate();
-		System.out.println(circularlyLinkList);
-		SinglyLinkedList<Integer> singlyLinkedList = new SinglyLinkedList<>(1, 2, 3);
-		singlyLinkedList.append(4);
-		singlyLinkedList.prepend(0);
-		System.out.println(singlyLinkedList);
-		DoublyLinkedList<Integer> doublyLinkedList = new DoublyLinkedList<>(1, 2, 3);
-		System.out.println("DLL: " + doublyLinkedList);
-		doublyLinkedList.append(4);
-		doublyLinkedList.prepend(0);
-		System.out.println("DLL: " + doublyLinkedList);
+		singlyLinkedList();
+	}
+
+	private static void singlyLinkedList() {
+		SinglyLinkedList<Integer> sll = new SinglyLinkedList<>();
+		sll.append(1);
+		sll.append(2);
+		assert sll.head() == 1;
+		assert sll.tail() == 2;
+		sll.prepend(0);
+		sll.prepend(-1);
+		sll.append(3);
+		assert sll.head() == -1;
+		assert sll.tail() == 3;
+		sll.pop();
+		sll.popFirst();
+		assert sll.head() == 0;
+		assert sll.tail() == 2;
+		assert sll.indexOf(sll.tail()) == sll.getSize() - 1;
+		System.out.println(sll);
+		sll.reverse();
+		sll.prepend(3);
+		sll.prepend(4);
+		System.out.println(sll);
+		System.out.println("Rotate list by 3");
+		sll.rotate(3);
+		System.out.println(sll);
+		sll.append(-1);
+		sll.append(-2);
+		sll.append(-3);
+		sll.prepend(5);
+		sll.prepend(6);
+		sll.prepend(7);
+		System.out.println(sll);
+		var parts = sll.split(3);
+		for (SinglyLinkedList<Integer> part : parts)
+			System.out.println(part);
 	}
 }

@@ -9,11 +9,14 @@ import java.util.ArrayList;
 
 public class CircularlyLinkList<T> extends LinkedList<T> {
     private Node<T> tail;
+    private Node<T> iterator;
     public CircularlyLinkList(T... values) {
         for(T value: values)
             this.append(value);
     }
-    public CircularlyLinkList(){}
+    public CircularlyLinkList(){
+
+    }
     @Override
     public void prepend(T value) {
         if (isEmpty()) {
