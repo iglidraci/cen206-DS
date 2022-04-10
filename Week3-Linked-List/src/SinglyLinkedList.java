@@ -137,6 +137,7 @@ public class SinglyLinkedList<T> extends LinkedList<T> {
 		return -1;
 	}
 
+
 	public void reverse() {
 		// reverse the linked list in place, do not return anything just mutate it
 		this.tail = this.head;
