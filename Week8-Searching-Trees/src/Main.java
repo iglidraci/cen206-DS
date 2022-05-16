@@ -27,10 +27,11 @@ public class Main {
         avl.printTree();
         System.out.println("\n" + avl);
         AVL<Integer> avl2 = new AVL<>();
-        for (int nr: new int[] {40, 20, 10, 25, 30, 23, 50})
+        for (int nr: new int[] {50, 20, 5, 23, 35, 21, 70})
             avl2.insert(nr);
         avl2.printTree();
         System.out.println("\n" + avl2);
+        AVL<String> avl3 = new AVL<>();
     }
 
     private static TreeNode constructBstFromPreorder(ArrayList<Integer> preorder) {

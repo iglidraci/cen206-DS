@@ -110,7 +110,7 @@ public class AVL<T extends Comparable<T>> {
 
             StringBuilder paddingBuilder = new StringBuilder(padding);
             if (hasRightSibling) {
-                paddingBuilder.append("│  ");
+                paddingBuilder.append(" │  ");
             } else {
                 paddingBuilder.append("   ");
             }
