@@ -8,11 +8,11 @@ public class Main {
         int[] nrs = {8, 9, 15, 5, 2, 3, 19, 1, 4, 50, 54, 100, 45, 70};
         for(int nr: nrs)
             bst.insert(nr);
-        System.out.println(Arrays.toString(bst.inorder().toArray()));
+        System.out.println(bst);
         bst.delete(2);
         bst.delete(19);
-        System.out.println(Arrays.toString(bst.inorder().toArray()));
         bst.delete(8);
+        System.out.println(bst);
         System.out.println(Arrays.toString(bst.inorder().toArray()));
         System.out.println("second smallest value: " + bst.smallestValue(2));
         System.out.println("fourth smallest value: " + bst.smallestValue(4));
@@ -31,7 +31,6 @@ public class Main {
             avl2.insert(nr);
         avl2.printTree();
         System.out.println("\n" + avl2);
-        AVL<String> avl3 = new AVL<>();
     }
 
     private static TreeNode constructBstFromPreorder(ArrayList<Integer> preorder) {

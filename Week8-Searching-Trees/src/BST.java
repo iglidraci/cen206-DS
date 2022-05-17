@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
 public class BST<T extends Comparable<T>> {
+    public static final String YELLOW_COLOR = "\u001B[33m";
+    public static final String BLUE_COLOR = "\u001B[34m";
+    public static final String RESET_COLOR = "\u001B[0m";
     private Node<T> root;
     private int size = 0;
     public boolean contains(T key) {
@@ -81,19 +84,16 @@ public class BST<T extends Comparable<T>> {
                         subRoot.getParent().setLeft(onlyChild);
                     else
                         subRoot.getParent().setRight(onlyChild);
+                    onlyChild.setParent(subRoot.getParent());
                 }
                 this.size--;
             } // case 2, node has one child only
             else {
-                Node<T> predecessor = predecessor(subRoot);
-                subRoot.setValue(predecessor.getValue());
-                delete(predecessor.getValue(), predecessor);
+                Node<T> maxNode = rightMost(subRoot.getLeft());
+                subRoot.setValue(maxNode.getValue());
+                delete(maxNode.getValue(), maxNode);
             } // case 3, two children
         }
-    }
-
-    private Node<T> predecessor(Node<T> node) {
-        return rightMost(node.getLeft());
     }
 
     private Node<T> rightMost(Node<T> node) {
@@ -156,14 +156,15 @@ public class BST<T extends Comparable<T>> {
 
             StringBuilder paddingBuilder = new StringBuilder(padding);
             if (hasRightSibling) {
-                paddingBuilder.append("│  ");
+                paddingBuilder.append(" │  ");
             } else {
                 paddingBuilder.append("   ");
             }
 
             String paddingForBoth = paddingBuilder.toString();
-            String pointerRight = "└──>";
-            String pointerLeft = (node.getRight() != null) ? "├──>" : "└──>";
+            String pointerRight = BLUE_COLOR + "R└──>" + RESET_COLOR;
+            String pointerLeft = (node.getRight() != null) ? "L├──>" : "L└──>";
+            pointerLeft = YELLOW_COLOR + pointerLeft + RESET_COLOR;
 
             traverseNodes(sb, paddingForBoth, pointerLeft, node.getLeft(), node.getRight() != null);
             traverseNodes(sb, paddingForBoth, pointerRight, node.getRight(), false);
@@ -179,8 +180,9 @@ public class BST<T extends Comparable<T>> {
         StringBuilder sb = new StringBuilder();
         sb.append(root.getValue());
 
-        String pointerRight = "└──>";
-        String pointerLeft = (root.getRight() != null) ? "├──>" : "└──>";
+        String pointerRight = BLUE_COLOR + "R└──>" + RESET_COLOR;
+        String pointerLeft = (root.getRight() != null) ? "L├──>" : "L└──>";
+        pointerLeft = YELLOW_COLOR + pointerLeft + RESET_COLOR;
 
         traverseNodes(sb, "", pointerLeft, root.getLeft(), root.getRight() != null);
         traverseNodes(sb, "", pointerRight, root.getRight(), false);
