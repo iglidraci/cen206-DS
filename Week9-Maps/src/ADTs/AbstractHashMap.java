@@ -5,20 +5,20 @@ import java.util.Random;
 
 public abstract class AbstractHashMap<K, V> extends AbstractMap<K, V> {
     protected int size=0; // number of entries in the hash map
-    protected int capacity; // length of the hash table
+    protected int m; // length of the hash table
     private final int p; // prime number
-    private final long scale;
-    private final long shift; // shift and scaling factors
-    public AbstractHashMap(int capacity, int p) {
-        this.capacity = capacity;
+    private final long a; // a from MAD formula
+    private final long b; // b from MAD formula
+    public AbstractHashMap(int m, int p) {
+        this.m = m;
         this.p = p;
         Random random = new Random();
-        this.scale = random.nextInt(p - 1) + 1;
-        this.shift = random.nextInt(p);
+        this.a = random.nextInt(p - 1) + 1; // a in set {1, 2, ... p-1}
+        this.b = random.nextInt(p); // b in set {0, 1, 2 ... p-1}
         createTable();
     }
-    public AbstractHashMap(int capacity) {
-        this(capacity, 109345121); // default prime number from the book
+    public AbstractHashMap(int m) {
+        this(m, 109345121); // default prime number from the book
     }
     public AbstractHashMap() {
         this(17); // default capacity
@@ -37,8 +37,8 @@ public abstract class AbstractHashMap<K, V> extends AbstractMap<K, V> {
     public V put(K key, V value) {
         int hValue = hashValue(key);
         V old = hashTablePut(hValue, key, value);
-        if (this.size > this.capacity / 2)
-            resize(2*this.capacity - 1); // keep the alpha <= 0.5
+        if (this.size > this.m / 2)
+            resize(2*this.m - 1); // keep the alpha <= 0.5
         return old;
     }
 
@@ -50,16 +50,16 @@ public abstract class AbstractHashMap<K, V> extends AbstractMap<K, V> {
 
 
     protected int hashValue(K key) {
-        // from MAD formula [(a*i + b) mod p] mod N
-        int i = key.hashCode();
-        return (int) (Math.abs((this.scale * i + this.shift) % this.p) % this.capacity);
+        // from MAD formula [(a*k + b) mod p] mod N
+        int k = key.hashCode();
+        return (int) (Math.abs((this.a * k + this.b) % this.p) % this.m);
     }
 
     private void resize(int newCapacity) {
         LinkedList<KeyValue<K, V>> list = new LinkedList<>();
         for(KeyValue<K, V> item : items())
             list.addLast(item);
-        this.capacity = newCapacity;
+        this.m = newCapacity;
         createTable();
         this.size = 0; // re-enter values from scratch
         for (KeyValue<K, V> item : list)

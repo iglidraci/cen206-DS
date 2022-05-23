@@ -1,6 +1,8 @@
 import ADTs.Map;
 import ADTs.Set;
 
+import java.util.function.Predicate;
+
 public class HashSet<K> implements Set<K> {
     private Map<K, K> hashMap;
     public HashSet(int capacity, int p) {
@@ -62,6 +64,15 @@ public class HashSet<K> implements Set<K> {
     @Override
     public boolean isEmpty() {
         return hashMap.isEmpty();
+    }
+
+    @Override
+    public void removeWhere(Predicate<K> predicate) {
+        ChainingHashMap<K, K> newMap = new ChainingHashMap<>();
+        for(K key : this.iterator())
+            if (!predicate.test(key))
+                newMap.put(key, key);
+        this.hashMap = newMap;
     }
 
     @Override

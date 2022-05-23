@@ -16,7 +16,7 @@ public class ChainingHashMap<K, V> extends AbstractHashMap<K, V> {
     }
     @Override
     protected void createTable() {
-        table = (ListMap<K, V>[]) new ListMap[this.capacity];
+        table = (ListMap<K, V>[]) new ListMap[this.m];
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ChainingHashMap<K, V> extends AbstractHashMap<K, V> {
     @Override
     public Iterable<KeyValue<K, V>> items() {
         LinkedList<KeyValue<K, V>> items = new LinkedList<>();
-        for (int i = 0; i < this.capacity; i++) {
+        for (int i = 0; i < this.m; i++) {
             if (table[i] != null) {
                 for(KeyValue<K, V> item : table[i].items())
                     items.addLast(item);
