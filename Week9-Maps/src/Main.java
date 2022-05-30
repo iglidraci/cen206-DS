@@ -4,6 +4,7 @@ import ADTs.Map;
 import ADTs.Set;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Main {
@@ -12,17 +13,21 @@ public class Main {
 //        testHashMap();
 //        testHashSet();
 //        testSpeed();
-        testContainsDuplicate2();
-        testLongestUniqueSubstring();
-        testTopFrequentElements();
-        testLRUCache();
+        try{
+          testContainsDuplicate2();
+          // testLongestUniqueSubstring();
+          // testTopFrequentElements();
+          // testLRUCache();
+        } catch (AssertionError err) {
+          System.out.println(err.getMessage());
+        }
     }
 
     private static void testLRUCache() {
         /*
-        * ["initialize", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
-            [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
-            * [void, void, void, 1, void, null, void, null, 3, 4]
+        * ["init", "put", "put", "get", "put", "get", "put",  "get",  "get",   "get"]
+            [[2], [1, 1], [2, 2], [1], [3, 3], [2],   [4, 4],  [1],    [3],     [4]]
+            [void, void,    void,  1,   void,  null,  void,   null,     3,       4]
         */
         int capacity = 2;
         Cache<Integer, Integer> cache = new DoubleLinkedLRU<>(capacity);
@@ -40,97 +45,62 @@ public class Main {
     private static void testTopFrequentElements() {
         int[] nums; int k;
         nums = new int[] {1,1,1,2,2,3,3,3}; k = 2;
-        Set<Integer> proof = new HashSet<>();
-        proof.add(1); proof.add(3);
         Set<Integer> answer = new HashSet<>();
         for(int nr : topFrequentElements(nums, k))
             answer.add(nr);
-        proof.subtractWith(answer);
-        assert proof.isEmpty();
+        assert (answer.contains(1) && answer.contains(3)) :
+        "TopFrequentElements failed -> nums = {1,1,1,2,2,3,3,3}; k = 2 should return [1, 3], returned " + answer;
         nums = new int[] {1,2};
-        proof = new HashSet<>();
-        proof.add(1); proof.add(2);
         answer = new HashSet<>();
         for (int nr : topFrequentElements(nums, k))
             answer.add(nr);
-        proof.subtractWith(answer);
-        assert proof.isEmpty();
+        assert (answer.contains(1) && answer.contains(2)) :
+        "TopFrequentElements failed -> nums = {1,2}; k = 2 should return [1, 2], returned " + answer;
+        nums = new int[] {1, 2, 2, 2, 1, 1, 1, 4, 4, 4, 2, 5, 5}; k = 3;
+        answer = new HashSet<>();
+        for (int nr : topFrequentElements(nums, k))
+            answer.add(nr);
+        assert (answer.contains(1) && answer.contains(2) && answer.contains(4)) :
+        "TopFrequentElements failed -> nums = {1,2}; k = 2 should return [1, 2, 5], returned " + answer;
     }
 
     private static ArrayList<Integer> topFrequentElements(int[] nums, int k) {
-        Map<Integer, Integer> frequencies = new ChainingHashMap<>();
-        for (int nr : nums) {
-            if (frequencies.contains(nr))
-                frequencies.put(nr, frequencies.get(nr) + 1);
-            else
-                frequencies.put(nr, 1);
-        }
-        // consider it as a matrix
-        ArrayList<Integer>[] orderedFreq = new ArrayList[nums.length + 1];
-        for (KeyValue<Integer, Integer> pair : frequencies.items()) {
-            // the most frequent elements will be placed on the right
-            if (orderedFreq[pair.getValue()] == null)
-                orderedFreq[pair.getValue()] = new ArrayList<>();
-            orderedFreq[pair.getValue()].add(pair.getKey());
-        }
-        ArrayList<Integer> top = new ArrayList<>();
-        int i = 0;
-        for (int j = orderedFreq.length - 1; j >= 0; j--) {
-            if (i >= 2) break;
-            if (orderedFreq[j] != null) {
-                top.addAll(orderedFreq[j]);
-                i += orderedFreq[j].size();
-            }
-        }
-        return top;
+        // write your solution here
+        return new ArrayList<Integer>();
     }
 
     private static void testLongestUniqueSubstring() {
         String str = "abcabcbb";
-        assert longestUniqueSubstring(str) == 3;
+        int answer;
+        answer = longestUniqueSubstring(str);
+        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"abcabcbb\" should be 3, your answer is " + answer;
         str = "bbbbb";
-        assert longestUniqueSubstring(str) == 1;
+        answer = longestUniqueSubstring(str);
+        assert answer == 1 : "LongestUniqueSubstring failed -> str = \"bbbbb\" should be 1, your answer is " + answer;
         str = "pwwkew";
-        assert longestUniqueSubstring(str) == 3;
+        answer = longestUniqueSubstring(str);
+        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"pwwkew\", should be 3, your answer is " + answer;
         str = "dvdf";
-        assert longestUniqueSubstring(str) == 3;
+        answer = longestUniqueSubstring(str);
+        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"dvdf\", should be 3, your answer is " + answer;
     }
 
     private static int longestUniqueSubstring(String str) {
-        Set<Character> chars = new HashSet<>();
-        int left = 0, right = 0;
-        int longest = 0;
-        while (right != str.length()) {
-            if (!chars.contains(str.charAt(right))) {
-                chars.add(str.charAt(right));
-                right++;
-            } // if right char is unique in the currently checked substring
-            else {
-                chars.remove(str.charAt(left));
-                left++;
-            }
-            longest = Math.max(longest, chars.size());
-        }
-        return longest;
+        // write your solution here
+        return 0;
     }
 
     private static void testContainsDuplicate2() {
         int[] nums; int k;
         nums = new int[] {1,2,3,1}; k = 3;
-        assert containsDuplicate2(nums, k);
+        assert containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,2,3,1}; k = 3";
         nums = new int[] {1,0,1,1}; k = 1;
-        assert containsDuplicate2(nums, k);
+        assert containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,0,1,1}; k = 1";
         nums = new int[] {1,2,3,1,2,3}; k = 2;
-        assert !containsDuplicate2(nums, k);
+        assert !containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,2,3,1,2,3}; k = 2";
     }
     static boolean containsDuplicate2(int[] nums, int k) {
-        // let's save each number as a key and last index as a value
-        Map<Integer, Integer> map = new ChainingHashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            if (map.contains(nums[i]) && (i - map.get(nums[i]) <= k))
-                return true;
-            map.put(nums[i], i);
-        }
+        // write your solution here
         return false;
     }
 
