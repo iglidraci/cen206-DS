@@ -31,7 +31,7 @@ public class Graph<T> {
         if (!adjacencyList.get(from).contains(to))
             adjacencyList.get(from).addLast(to);
         else throw new IllegalArgumentException("Edge already exists");
-        if (isDirected) {
+        if (!isDirected) { // undirected graph
             if (!adjacencyList.get(to).contains(from))
                 adjacencyList.get(to).addLast(from);
             else throw new IllegalArgumentException("Edge already exists");
