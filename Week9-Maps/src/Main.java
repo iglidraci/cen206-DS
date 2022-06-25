@@ -10,98 +10,68 @@ import java.util.Random;
 public class Main {
     static Random random = new Random();
     public static void main(String[] args) {
-//        testHashMap();
-//        testHashSet();
-//        testSpeed();
-        try{
-          testContainsDuplicate2();
-          // testLongestUniqueSubstring();
-          // testTopFrequentElements();
-          // testLRUCache();
-        } catch (AssertionError err) {
-          System.out.println(err.getMessage());
-        }
+        // ChainingHashMap is a custom class
+        // use Java HashMap instead since you won't have enough time in exam to write ChainingHashMap class
+        // re-write all the solutions using java.util.HashMap, little will change
     }
-
-    private static void testLRUCache() {
-        /*
-        * ["init", "put", "put", "get", "put", "get", "put",  "get",  "get",   "get"]
-            [[2], [1, 1], [2, 2], [1], [3, 3], [2],   [4, 4],  [1],    [3],     [4]]
-            [void, void,    void,  1,   void,  null,  void,   null,     3,       4]
-        */
-        int capacity = 2;
-        Cache<Integer, Integer> cache = new DoubleLinkedLRU<>(capacity);
-        cache.put(1, 1);
-        cache.put(2, 2);
-        assert cache.get(1) == 1;
-        cache.put(3, 3);
-        assert cache.get(2) == null;
-        cache.put(4, 4);
-        assert cache.get(1) == null;
-        assert cache.get(3) == 3;
-        assert cache.get(4) == 4;
-    }
-
-    private static void testTopFrequentElements() {
-        int[] nums; int k;
-        nums = new int[] {1,1,1,2,2,3,3,3}; k = 2;
-        Set<Integer> answer = new HashSet<>();
-        for(int nr : topFrequentElements(nums, k))
-            answer.add(nr);
-        assert (answer.contains(1) && answer.contains(3)) :
-        "TopFrequentElements failed -> nums = {1,1,1,2,2,3,3,3}; k = 2 should return [1, 3], returned " + answer;
-        nums = new int[] {1,2};
-        answer = new HashSet<>();
-        for (int nr : topFrequentElements(nums, k))
-            answer.add(nr);
-        assert (answer.contains(1) && answer.contains(2)) :
-        "TopFrequentElements failed -> nums = {1,2}; k = 2 should return [1, 2], returned " + answer;
-        nums = new int[] {1, 2, 2, 2, 1, 1, 1, 4, 4, 4, 2, 5, 5}; k = 3;
-        answer = new HashSet<>();
-        for (int nr : topFrequentElements(nums, k))
-            answer.add(nr);
-        assert (answer.contains(1) && answer.contains(2) && answer.contains(4)) :
-        "TopFrequentElements failed -> nums = {1,2}; k = 2 should return [1, 2, 5], returned " + answer;
-    }
-
     private static ArrayList<Integer> topFrequentElements(int[] nums, int k) {
-        // write your solution here
-        return new ArrayList<Integer>();
+        
+        Map<Integer, Integer> frequencies = new ChainingHashMap<>();
+        for (int nr : nums) {
+            if (frequencies.contains(nr))
+                frequencies.put(nr, frequencies.get(nr) + 1);
+            else
+                frequencies.put(nr, 1);
+        }
+        // consider it as a matrix ≈ array of lists
+        ArrayList<Integer>[] orderedFreq = new ArrayList[nums.length + 1];
+        for (KeyValue<Integer, Integer> pair : frequencies.items()) {
+            // the most frequent elements will be placed on the right
+            if (orderedFreq[pair.getValue()] == null)
+                orderedFreq[pair.getValue()] = new ArrayList<>();
+            orderedFreq[pair.getValue()].add(pair.getKey()); // since might be different numbers with the same frequency
+        }
+        ArrayList<Integer> top = new ArrayList<>();
+        int i = 0;
+        for (int j = orderedFreq.length - 1; j >= 0; j--) {
+            if (i >= k) break;
+            if (orderedFreq[j] != null) {
+                top.addAll(orderedFreq[j]);
+                i += orderedFreq[j].size();
+            }
+        }
+        return top;
     }
 
-    private static void testLongestUniqueSubstring() {
-        String str = "abcabcbb";
-        int answer;
-        answer = longestUniqueSubstring(str);
-        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"abcabcbb\" should be 3, your answer is " + answer;
-        str = "bbbbb";
-        answer = longestUniqueSubstring(str);
-        assert answer == 1 : "LongestUniqueSubstring failed -> str = \"bbbbb\" should be 1, your answer is " + answer;
-        str = "pwwkew";
-        answer = longestUniqueSubstring(str);
-        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"pwwkew\", should be 3, your answer is " + answer;
-        str = "dvdf";
-        answer = longestUniqueSubstring(str);
-        assert answer == 3 : "LongestUniqueSubstring failed -> str = \"dvdf\", should be 3, your answer is " + answer;
-    }
-
+    
     private static int longestUniqueSubstring(String str) {
-        // write your solution here
-        return 0;
+        Set<Character> chars = new HashSet<>();
+        int left = 0, right = 0; // two pointers, left and right
+        int longest = 0;
+        while (right != str.length()) { // while we haven't reached the end of the string
+            if (!chars.contains(str.charAt(right))) {
+                chars.add(str.charAt(right));
+                right++;
+            } // if right char is unique in the currently checked substring
+            else {
+                chars.remove(str.charAt(left));
+                left++;
+            }
+            longest = Math.max(longest, chars.size());
+        }
+        return longest;
     }
 
-    private static void testContainsDuplicate2() {
-        int[] nums; int k;
-        nums = new int[] {1,2,3,1}; k = 3;
-        assert containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,2,3,1}; k = 3";
-        nums = new int[] {1,0,1,1}; k = 1;
-        assert containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,0,1,1}; k = 1";
-        nums = new int[] {1,2,3,1,2,3}; k = 2;
-        assert !containsDuplicate2(nums, k) : "ContainsDuplicate2 failed -> nums = {1,2,3,1,2,3}; k = 2";
-    }
+    
     static boolean containsDuplicate2(int[] nums, int k) {
-        // write your solution here
-        return false;
+         // let's save each number as a key and last index as a value
+         Map<Integer, Integer> map = new ChainingHashMap<>();
+         for (int i = 0; i < nums.length; i++) {
+             if (map.contains(nums[i]) && (i - map.get(nums[i]) <= k))
+                 return true;
+             map.put(nums[i], i);
+         }
+         return false;
     }
 
     private static void testHashSet() {
