@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.LinkedList;
 
 public class Sorting {
 	/*insertion sort*/
@@ -136,6 +137,22 @@ public class Sorting {
 			}
 		}
 	}
+  public static<T extends Key> void countingSort(T[] arr, int k) {
+    LinkedList<T>[] counting = new LinkedList[k+1];
+    for(int i=0; i < arr.length; i++) {
+      int key = arr[i].getKey();
+      if (counting[key] == null)
+        counting[key] = new LinkedList<>();
+      counting[key].add(arr[i]);
+    }
+    int j = 0;
+    for(int i=0; i<=k; i++) {
+			if(counting[i]!=null) {
+				for(T element: counting[i])
+					arr[j++] = element;
+			}
+		}
+  }
 
 	/*auxiliary methods*/
 	private static<T> void swap(T[] arr, int i, int j) {
