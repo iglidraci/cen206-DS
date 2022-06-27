@@ -4,6 +4,7 @@ public class LL {
         SplitList splitList = splitEqual(head);
         printLinkedList(splitList.head1);
         printLinkedList(splitList.head2);
+        printLinkedList(merge(splitList.head1, splitList.head2));
     }
     static void printLinkedList(Node head) {
         Node current = head;
@@ -13,6 +14,28 @@ public class LL {
         }
         System.out.println();
     }
+    static Node merge(Node head1, Node head2) {
+        Node head = new Node(); // this will serve as a sentinel to point to the real head
+        Node tail = head;
+        while (!(head1 == null || head2 == null)) { // if none of the lists has reached the end
+            if (head1.val < head2.val) {
+                tail.next = head1;
+                head1 = head1.next;
+            } else {
+                tail.next = head2;
+                head2 = head2.next;
+            }
+            tail = tail.next;
+        }
+        if (head1 != null) // if we haven't finished with list 1
+            tail.next = head1;
+        if (head2 != null) // if we haven't finished with list 2
+            tail.next = head2;
+        // this list will be sorted asc though, not desc
+        return head.next;
+    }
+
+    
     static SplitList splitEqual(Node head) {
         /*
          * the idea is simple
@@ -48,6 +71,7 @@ class Node {
     public Node(int val) {
         this(val, null);
     }
+    public Node() {}
 }
 
 class SplitList {
