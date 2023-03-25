@@ -12,6 +12,9 @@ public class Exercises {
 
     public static void main(String[] args) {
          ListNode head = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
+         printList(head);
+         ListNode newHead = rotateRight(head, 0);
+         printList(newHead);
     }
 
     static ListNode reverseList(ListNode head) {
@@ -21,7 +24,17 @@ public class Exercises {
          * Input: head = [1,2,3,4,5]
          * Output: [5,4,3,2,1]
          */
-        return null;
+        ListNode current, next, prev;
+        prev = null;
+        current = null;
+        next = head;
+        while(next != null) {
+            current = next;
+            next = next.next;
+            current.next = prev;
+            prev = current;
+        }
+        return current;
     }
 
     static ListNode rotateRight(ListNode head, int k) {
@@ -34,7 +47,22 @@ public class Exercises {
          Input: head = [0,1,2], k = 4
          Output: [2,0,1]
           */
-        return null;
+        if(head == null || head.next == null) return head;
+        int count = 1;
+        ListNode tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
+            count++;
+        }
+        k = k % count;
+        if (k==0) return head;
+        ListNode newTail = head;
+        for(int i =0; i < count - k - 1; i++)
+            newTail = newTail.next;
+        ListNode newHead = newTail.next;
+        newTail.next = null;
+        tail.next = head;
+        return newHead;
     }
 
     static void printList(ListNode head) {
