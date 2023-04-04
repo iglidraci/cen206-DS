@@ -1,5 +1,3 @@
-import java.util.Iterator;
-
 public interface Tree<T> {
     /**
      * The following accessor methods allow the user to navigate various positions of a tree
