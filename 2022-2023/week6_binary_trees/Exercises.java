@@ -1,3 +1,4 @@
+import java.util.Stack;
 public class Exercises {
     // definition for Binary Tree Node
     static class TreeNode {
@@ -49,7 +50,8 @@ public class Exercises {
 
     static int countNodes(TreeNode root) {
         /*Given the root of a binary tree, return the number of nodes*/
-        return 0;
+        if(root == null) return 0;
+        return 1 + countNodes(root.left) + countNodes(root.right);
     }
 
     static void invertTree(TreeNode root) {
@@ -61,6 +63,13 @@ public class Exercises {
         Input: root = [4,2,7,1,3,6,9]
         Output: [4,7,2,9,6,3,1]
         */
+        if (root != null) {
+            TreeNode temp = root.left;
+            root.left = root.right;
+            root.right = temp;
+            invertTree(root.left);
+            invertTree(root.right);
+        }
     }
 
     static boolean isSameTree(TreeNode p, TreeNode q) {
@@ -73,7 +82,11 @@ public class Exercises {
         Input: p = [1,2], q = [1,null,2]
         Output: false
          */
-        return false;
+        if(p == null && q == null)
+            return true;
+        if(p == null || q == null) return false;
+        if (p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
     static TreeNode search(TreeNode root, int key) {
@@ -81,29 +94,52 @@ public class Exercises {
         Given the root of a BST, return the Node holding the given key
         Return null if key not in the BST
          */
-        return null;
+        if(root == null || root.val == key)
+            return root;
+        if(root.val > key)
+            return search(root.left, key);
+        else return search(root.right, key);
     }
 
     static TreeNode minimum(TreeNode root) {
         /*
         Given the root of a BST, return the node holding the minimum value
          */
-        return null;
+        if(root == null || root.left == null) return root;
+        else return minimum(root.left);
     }
 
     static TreeNode maximum(TreeNode root) {
         /*
         Given the root of a BST, return the node holding the maximum value
          */
-        return null;
+        if(root == null || root.right == null) return root;
+        else return maximum(root.right);
     }
     static void bstInsert(TreeNode root, int key) {
         /*Given the root of a BST, insert a new value into it*/
+        if(root.val > key) {
+            if(root.left == null) root.left = new TreeNode(key);
+            else bstInsert(root.left, key);
+        } else {
+            if(root.right == null) root.right = new TreeNode(key);
+            else bstInsert(root.right, key);
+        }
     }
 
     static boolean isValidBST(TreeNode root) {
         /*Given the root of a binary tree, determine if it is a BST.*/
-        return false;
+        Stack<Integer> stack = new Stack<>();
+        return isValid(root, stack);
+    }
+
+    static boolean isValid(TreeNode root, Stack<Integer> stack) {
+        if(root == null) return true;
+        boolean b = isValid(root.left, stack);
+        if(!stack.isEmpty() && stack.peek() >= root.val) return false;
+        stack.push(root.val);
+        b = b && isValid(root.right, stack);
+        return b;
     }
 
     /**Methods to print a binary tree. Don't change them, don't bother to read them.
