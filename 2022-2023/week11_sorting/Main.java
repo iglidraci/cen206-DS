@@ -21,13 +21,11 @@ public class Main {
     }
 
     private static int[] generateSequence(int size) {
-        int[] sequence = new int[size + 2];
+        int[] sequence = new int[size];
         Random random = new Random();
         for (int i = 0; i < size; i++) {
             sequence[i] = random.nextInt();
         }
-        sequence[size - 2] = Integer.MAX_VALUE;
-        sequence[size - 1] = Integer.MAX_VALUE;
         return sequence;
     }
 
