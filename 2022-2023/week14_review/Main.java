@@ -27,7 +27,17 @@ public class Main {
      * Return the number of max nodes in the binary tree.
      */
     static int maxNodes(TreeNode root) {
-        return 0;
+        return countMaxNodes(root, Integer.MIN_VALUE);
+    }
+
+    private static int countMaxNodes(TreeNode root, int maxPred) {
+        int c = 0;
+        if(root == null) return c;
+        if(root.val >= maxPred) c++;
+        int newMax = Math.max(root.val, maxPred);
+        c += countMaxNodes(root.left, newMax);
+        c += countMaxNodes(root.right, newMax);
+        return c;
     }
 
     /**
@@ -36,18 +46,36 @@ public class Main {
      * All the values of preorder are unique.
      */
     static TreeNode bstFromPreorder(int[] preorder) {
-        return null;
+        TreeNode root = new TreeNode(preorder[0]);
+        for(int i=1; i < preorder.length; i++) {
+            insertBST(root, preorder[i]);
+        }
+        return root;
+    }
+
+    private static void insertBST(TreeNode root, int val) {
+        if(root.val > val) {
+            if(root.left == null)
+                root.left = new TreeNode(val);
+            else
+                insertBST(root.left, val);
+        } else {
+            if(root.right == null)
+                root.right = new TreeNode(val);
+            else
+                insertBST(root.right, val);
+        }
     }
 
     /*
-    * Given the root of a binary tree, check whether is an AVL tree or not
-    * */
+     * Given the root of a binary tree, check whether is an AVL tree or not
+     * */
     static boolean isAVLTree(TreeNode root) {
         return isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE) && isBalanced(root);
     }
 
     static boolean isBalanced(TreeNode root) {
-        return Math.abs(height(root.left) - height(root.right)) <= 1;
+        return (Math.abs(height(root.left) - height(root.right)) <= 1) && isBalanced(root.left) && isBalanced(root.right);
     }
 
     private static int height(TreeNode root) {
@@ -69,7 +97,30 @@ public class Main {
      * Output: [1,2]
      */
     static int[] topKFrequent(int[] nums, int k) {
-        return null;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int num : nums) {
+            if(map.containsKey(num)) map.put(num, map.get(num) + 1);
+            else map.put(num, 1);
+        }
+        ArrayList<Integer>[] bucket = new ArrayList[nums.length + 1];
+        for(int nr : map.keySet()) {
+            int frequency = map.get(nr);
+            if (bucket[frequency] == null)
+                bucket[frequency] = new ArrayList<>();
+            bucket[frequency].add(nr);
+        }
+        int[] topFrequent = new int[k];
+        int i = bucket.length - 1;
+        int j = 0;
+        while (k > 0 && i >=0) {
+            if(bucket[i] != null) {
+                for(int nr : bucket[i])
+                    topFrequent[j++] = nr;
+                k = k - bucket[i].size();
+            }
+            i--;
+        }
+        return topFrequent;
     }
 
     /**
@@ -79,7 +130,15 @@ public class Main {
      */
 
     static void sortColors(int[] nums) {
-
+        int[] freqs = new int[3];
+        for (int num : nums) {
+            freqs[num]++;
+        }
+        int k = 0;
+        for(int i=0; i < 3; i++) {
+            for(int j=1; j <= freqs[i]; j++)
+                nums[k++] = i;
+        }
     }
 
     /**
@@ -87,7 +146,11 @@ public class Main {
      * return the adjacency matrix representation of a list of edges.
      */
     static boolean[][] adjacencyMatrix(ArrayList<Edge> edgeList) {
-        return null;
+        boolean[][] graph = new boolean[10][10];
+        for(Edge edge : edgeList) {
+            graph[edge.from][edge.to] = true;
+        }
+        return graph;
     }
     /**
      * You are given an adjacency list representation of a directed graph.
@@ -96,7 +159,18 @@ public class Main {
      * Exploring means printing the order by which you visit them.
      */
     static void depthFirst(HashMap<Integer, LinkedList<Integer>> graph, int vertex) {
+        HashSet<Integer> visited = new HashSet<>();
+        System.out.print("DFS order: ");
+        explore(graph, vertex, visited);
+        System.out.println();
+    }
 
+    private static void explore(HashMap<Integer, LinkedList<Integer>> graph, int vertex, HashSet<Integer> visited) {
+        visited.add(vertex); // same as v.visited = True
+        System.out.print(vertex + " ");
+        for(int neighbor: graph.get(vertex))
+            if (!visited.contains(neighbor))
+                explore(graph, neighbor, visited);
     }
 
     /*
@@ -128,21 +202,38 @@ public class Main {
      Output: -1
      */
     static int findJudge(int n, int[][] trust) {
-        return -1;
+        HashSet<Integer> trusters = new HashSet<>();
+        for(int i = 0; i < trust.length; i++) {
+            trusters.add(trust[i][0]);
+        }
+        int potJudge = -1;
+        for(int i = 1; i <= n; i++) {
+            if(!trusters.contains(i)) {
+                potJudge = i;
+                break;
+            }
+        }
+        if(potJudge == -1) return -1;
+        HashSet<Integer> whoTrustsJudge = new HashSet<>();
+        for(int i = 0; i < trust.length; i++) {
+            if(trust[i][1] == potJudge)
+                whoTrustsJudge.add(trust[i][0]);
+        }
+        return (whoTrustsJudge.size() == n-1) ? potJudge : -1;
     }
 
 }
 class TreeNode {
-      int val;
-      TreeNode left;
-      TreeNode right;
-      TreeNode() {}
-      TreeNode(int val) { this.val = val; }
-      TreeNode(int val, TreeNode left, TreeNode right) {
-          this.val = val;
-          this.left = left;
-          this.right = right;
-      }
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
 class Edge {
