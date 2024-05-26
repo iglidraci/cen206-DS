@@ -223,6 +223,48 @@ public class Graph<T> {
     }
     /* end of breadth first search */
 
+    // another implementation of BFS, this one is a bit fancier. Visit any node reachable from vertex s.
+    public void BFS(T s) {
+        HashMap<T, Integer> level = new HashMap<>(); level.put(s, 0);
+        HashMap<T, T> parent = new HashMap<>(); parent.put(s, null);
+        int i = 1;
+        Queue<T> frontier = new ArrayDeque<>(); frontier.add(s); // vertices reachable in level i - 1
+        while (!frontier.isEmpty()) {
+            Queue<T> next = new ArrayDeque<>();
+            for (T v : frontier) {
+                for(T u : adjacencyList.get(v)) {
+                    if (!level.containsKey(u)) {
+                        level.put(u, i);
+                        parent.put(u, v);
+                        next.add(u);
+                    }
+                }
+            }
+            frontier = next;
+            i += 1;
+        }
+        reconstructAllPaths(s, level, parent);
+    }
+
+    private void reconstructAllPaths(T s, HashMap<T, Integer> level, HashMap<T, T> parent) {
+        for(T v : adjacencyList.keySet()) { // for all vertices
+            if(level.containsKey(v)) reconstructPath(s, v, level, parent);
+            else System.out.println("No path from " + s + " to " + v);
+        }
+    }
+
+    private void reconstructPath(T s, T v, HashMap<T, Integer> level, HashMap<T, T> parent) {
+        System.out.print("Distance from " + s + " to " + v + " is " + level.get(v));
+        ArrayList<T> result = new ArrayList<>();
+        while (v != null) {
+            result.add(v);
+            v = parent.get(v);
+        }
+        Collections.reverse(result);
+        System.out.println(", path is: " + result.stream().map(Object::toString).reduce((x, y) -> x + "->" + y).orElse("[]"));
+
+    }
+
     /* you're a functional programming expert now*/
     @Override
     public String toString() {
